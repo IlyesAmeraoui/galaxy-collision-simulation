@@ -1,30 +1,22 @@
-# Rectury Open Source Playground
+# Galaxy Collision Simulation
 
-A small public space for practical experiments, examples, and community resources around **Rectury**.
+A from-scratch project to explore the collision and evolution of two galaxies through simulation.
 
-## What belongs here
+## Goal
 
-- Reusable UI and developer-workflow ideas
-- Minimal integration examples and troubleshooting notes
-- Improvements proposed by the community
-- Clear issues with a reproducible goal
+Build the project incrementally from first principles: define the physical model, test the assumptions, and implement each stage deliberately.
 
-## Getting started
+## Project status
 
-1. Browse the open issues to find something useful to improve.
-2. Open a discussion when you have a question, an idea, or a solution worth documenting.
-3. For code or documentation changes, create a focused pull request that explains the outcome.
+**Stage:** research and project setup.
 
-## Contribution principles
+## Planned milestones
 
-Keep changes small, understandable, and useful to someone other than the author. Please avoid secrets, generated build output, and unrelated refactors.
-
-## Roadmap
-
-- [ ] Add a first practical Rectury workflow example
-- [ ] Document common setup and troubleshooting steps
-- [ ] Welcome community proposals through issues and discussions
+- [ ] Define the simulation scope and physical assumptions
+- [ ] Choose numerical methods and validate simple test cases
+- [ ] Model two initial galaxies
+- [ ] Simulate their interaction and visualize the results
 
 ## License
 
-This project is available under the [MIT License](LICENSE).
+This project is released under the [MIT License](LICENSE).
