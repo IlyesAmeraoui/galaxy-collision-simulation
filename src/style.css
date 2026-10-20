@@ -1,0 +1,410 @@
+/*
+ * Minimalist Stylesheet — Black Hole General Relativity Simulator
+ * Full-bleed space canvas with lightweight translucent glass HUD controls.
+ */
+
+:root {
+  --bg-void: #030408;
+  --glass-bg: rgba(8, 11, 20, 0.68);
+  --glass-border: rgba(255, 255, 255, 0.09);
+  --glass-border-hover: rgba(255, 255, 255, 0.22);
+  --text-main: #f8fafc;
+  --text-dim: #94a3b8;
+  --text-muted: #64748b;
+  --accent: #f59e0b;
+  --accent-cyan: #38bdf8;
+  --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app {
+  width: 100vw;
+  height: 100vh;
+  background: var(--bg-void);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  overflow: hidden;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fullscreen Viewport Canvas Container */
+.viewport {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  background: var(--bg-void);
+}
+
+.viewport.mode-raytracer {
+  grid-template-columns: 1fr;
+}
+
+.viewport.mode-geodesic {
+  grid-template-columns: 1fr;
+}
+
+.viewport.mode-split {
+  grid-template-columns: 1.25fr 1fr;
+}
+
+.canvas-pane {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.viewport.mode-split #pane-raytracer {
+  border-right: 1px solid var(--glass-border);
+}
+
+.canvas-pane.hidden {
+  display: none;
+}
+
+.sim-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+}
+
+.sim-canvas:active {
+  cursor: grabbing;
+}
+
+#orbit-canvas {
+  cursor: crosshair;
+}
+
+/* Minimalist Floating Top Bar */
+.hud-top {
+  position: fixed;
+  top: 16px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 30;
+}
+
+.glass-pill {
+  pointer-events: auto;
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+.brand-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.brand-eq {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  border-left: 1px solid var(--glass-border);
+  padding-left: 10px;
+}
+
+.mode-switch {
+  padding: 4px;
+  gap: 4px;
+}
+
+.mode-btn {
+  background: transparent;
+  color: var(--text-dim);
+  border: none;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mode-btn:hover {
+  color: var(--text-main);
+}
+
+.mode-btn.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-main);
+}
+
+.preset-select {
+  background: transparent;
+  color: var(--text-main);
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.preset-select option {
+  background: #0b0f19;
+  color: var(--text-main);
+}
+
+/* Minimalist Floating Left Control Dock */
+.hud-controls {
+  position: fixed;
+  top: 68px;
+  left: 18px;
+  width: 246px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 30;
+}
+
+.control-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.control-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.73rem;
+}
+
+.control-label {
+  color: var(--text-dim);
+}
+
+.control-value {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-main);
+}
+
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  outline: none;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-main);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+input[type='range']::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding-top: 2px;
+}
+
+.chip-btn {
+  flex: 1 1 auto;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-dim);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 5px 7px;
+  font-family: var(--font-mono);
+  font-size: 0.67rem;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.chip-btn:hover {
+  border-color: var(--glass-border-hover);
+  color: var(--text-main);
+}
+
+.chip-btn.active {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #fde68a;
+}
+
+.geodesic-tools {
+  border-top: 1px solid var(--glass-border);
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.geodesic-tools.hidden {
+  display: none;
+}
+
+.mini-label {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+/* Floating Right Potential & Equations Popover (collapsible) */
+.hud-drawer {
+  position: fixed;
+  top: 68px;
+  right: 18px;
+  width: 280px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 30;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.hud-drawer.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+}
+
+.potential-wrap {
+  width: 100%;
+  height: 130px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  background: rgba(4, 6, 12, 0.75);
+}
+
+#potential-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.eq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.eq-item {
+  padding: 5px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  border-left: 2px solid var(--accent);
+}
+
+/* Minimalist Bottom Telemetry Bar */
+.hud-bottom {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  padding: 7px 20px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  z-index: 30;
+  white-space: nowrap;
+}
+
+.stat-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.stat-key {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.stat-val {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.stat-sep {
+  width: 1px;
+  height: 14px;
+  background: var(--glass-border);
+}
+
+@media (max-width: 900px) {
+  .brand-eq {
+    display: none;
+  }
+  .hud-bottom {
+    gap: 10px;
+    padding: 6px 12px;
+    max-width: 95vw;
+    overflow-x: auto;
+  }
+}

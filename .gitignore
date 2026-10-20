@@ -1,0 +1,6 @@
+node_modules
+dist
+.rectury
+tsconfig.tsbuildinfo
+.DS_Store
+*.log
