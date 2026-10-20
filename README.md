@@ -9,188 +9,188 @@
 
 # Event Horizon
 
-Simulador de agujeros negros en el navegador. No es una animación decorativa: la interfaz calcula y dibuja métricas de relatividad general (Schwarzschild y Kerr) y deja ver, en tiempo real, qué cambia cuando mueves la masa, el espín, la acreción o el punto de vista.
+A black hole simulator that runs in the browser. It is not a decorative animation. The interface computes and draws general-relativity quantities for the Schwarzschild and Kerr metrics, and shows, in real time, what changes when you move the mass, the spin, the accretion rate, or the viewpoint.
 
-La app se llama **Event Horizon** en pantalla. El título de la ventana es `GR-LAB // General Relativistic Black Hole Simulator`. El paquete npm es `schwarzschild-kerr-blackhole-simulator`.
+On screen the app is named **Event Horizon**. The window title is `GR-LAB // General Relativistic Black Hole Simulator`. The npm package is `schwarzschild-kerr-blackhole-simulator`.
 
-## Qué ves al abrirla
+## What you see when it opens
 
-La vista por defecto es **3D Space**, con el preset **Cygnus X-1** (21.2 masas solares, espín 0.95, inclinación 46°). Encima del canvas flota una barra de cristal con tres zonas:
+The default view is **3D Space**, with the **Cygnus X-1** preset (21.2 solar masses, spin 0.95, inclination 46°). A glass bar floats over the canvas in three zones:
 
-- La marca **Event Horizon** y la métrica de Schwarzschild en el plano ecuatorial: `ds² = -(1 - r_s/r) c² dt² + (1 - r_s/r)⁻¹ dr² + r² dΩ²`.
-- El cambio de modo: **3D Space**, **Split View** y **2D Geodesics**.
-- El selector de preset y el botón **Formulas & V_eff**.
+- The **Event Horizon** mark and the equatorial Schwarzschild metric: `ds² = -(1 - r_s/r) c² dt² + (1 - r_s/r)⁻¹ dr² + r² dΩ²`.
+- The mode switch: **3D Space**, **Split View**, and **2D Geodesics**.
+- The preset selector and the **Formulas & V_eff** button.
 
-A la izquierda hay una tarjeta de controles. Abajo, una tira de telemetría que se recalcula con las fórmulas analíticas cada vez que cambias un parámetro.
+A control card sits on the left. A telemetry strip sits at the bottom and is recomputed from the analytic formulas whenever a parameter changes.
 
-## Las tres vistas
+## The three views
 
 ### 3D Space
 
-Un raytracer relativista a pantalla completa. Traza fotones hacia atrás en el tiempo, desde la cámara del observador, integrando la geodésica nula con Runge-Kutta de orden 4 (la ecuación de Binet relativista, más un término de arrastre de marco de Kerr).
+A fullscreen relativistic raytracer. It traces photons backward in time from the observer camera, integrating the null geodesic with fourth-order Runge-Kutta (the relativistic Binet equation, plus a Kerr frame-dragging term).
 
-Lo que produce:
+What it produces:
 
-- El disco de acreción delgado, con el perfil de temperatura de Novikov–Thorne / Shakura–Sunyaev: `T(r) ∝ r⁻³ᐟ⁴ (1 - √(r_ISCO / r))¹ᐟ⁴`.
-- El color del disco sale de un cuerpo negro de Planck: la temperatura en kelvin se convierte a RGB.
-- La imagen primaria del disco, los arcos de Einstein de arriba y de abajo, y el anillo de fotones.
-- La sombra del agujero negro. En Schwarzschild el impacto crítico es `b_c = 3√3 / 2 r_s ≈ 2.598 r_s`. Con espín, el limbo se calcula a partir de las órbitas de fotones prógrada y retrógrada (Bardeen, 1973).
+- The thin accretion disk, with the Novikov–Thorne / Shakura–Sunyaev temperature profile: `T(r) ∝ r⁻³ᐟ⁴ (1 - √(r_ISCO / r))¹ᐟ⁴`.
+- Disk color comes from a Planck blackbody: temperature in kelvin is mapped to RGB.
+- The primary disk image, the upper and lower Einstein arcs, and the photon ring.
+- The black hole shadow. In Schwarzschild the critical impact parameter is `b_c = 3√3 / 2 r_s ≈ 2.598 r_s`. With spin, the limb is computed from the prograde and retrograde photon orbits (Bardeen, 1973).
 
-El render va en **WebGL2** (un quad a pantalla completa y un fragment shader). Si WebGL2 no está disponible, cae a **Canvas 2D**.
+Rendering uses **WebGL2** (a fullscreen quad and a fragment shader). If WebGL2 is unavailable, it falls back to **Canvas 2D**.
 
-Cómo moverte en esta vista:
+How to move in this view:
 
-- Arrastrar con el ratón cambia el azimut `φ` y la inclinación `θ` (limitada entre 5° y 89°).
-- La rueda acerca o aleja al observador entre `5 r_s` y `22 r_s`.
+- Dragging changes the azimuth `φ` and the inclination `θ` (clamped between 5° and 89°).
+- The scroll wheel moves the observer between `5 r_s` and `22 r_s`.
 
 ### Split View
 
-Las dos vistas a la vez: el raytracer 3D y el laboratorio 2D de geodésicas. Los controles de lanzamiento aparecen en esta vista y en la vista 2D.
+Both views at once: the 3D raytracer and the 2D geodesic lab. The launch controls appear in this view and in the 2D view.
 
 ### 2D Geodesics
 
-El plano ecuatorial, en unidades de `r_s`. El laboratorio integra partículas con RK4 y marca tres finales posibles: `orbiting`, `captured` o `escaped`.
+The equatorial plane, in units of `r_s`. The lab integrates particles with RK4 and marks three possible endings: `orbiting`, `captured`, or `escaped`.
 
-- **Photon** (geodésica nula, `ds² = 0`): la luz se dobla por el término `1/r⁵`. Ahí aparecen la esfera de fotones y la captura.
-- **Massive** (geodésica temporal): además de ese término, la partícula siente la atracción monopolar. Con momento angular suficiente precesa el periastro (las rosetas).
+- **Photon** (null geodesic, `ds² = 0`): light bends because of the `1/r⁵` term. That is where the photon sphere and capture show up.
+- **Massive** (timelike geodesic): on top of that term, the particle feels the monopole attraction. With enough angular momentum the periapsis precesses (the rosettes).
 
-El espín entra como un acoplo de Lense–Thirring, proporcional a `a* L / r³`.
+Spin enters as a Lense–Thirring coupling, proportional to `a* L / r³`.
 
-En el canvas 2D, clic y arrastre lanza una partícula. La dirección del arrastre es la velocidad inicial. En modo fotón la rapidez se normaliza a `c`. En modo masivo, la rapidez escala con la longitud del arrastre y se recorta por debajo de `c`.
+On the 2D canvas, click and drag to launch a particle. The drag direction is the initial velocity. In photon mode the speed is normalized to `c`. In massive mode the speed scales with the drag length and is clipped below `c`.
 
-## Controles
+## Controls
 
-| Control | Qué hace | Rango |
+| Control | What it does | Range |
 | --- | --- | --- |
-| Mass (M) | Masa del agujero negro, en escala logarítmica | de `10^0.5` a `10^10` masas solares |
-| Kerr Spin (a*) | Espín adimensional `a* = c J / (G M²)` | 0 a 0.998 |
-| Accretion (ṁ) | Tasa de acreción en unidades de Eddington, `Ṁ / Ṁ_Edd` | 0.01 a 1.00 |
-| Inclination (θ) | Inclinación del observador | 5° a 89° |
-| Distance (r_obs) | Distancia de la cámara | 5 a 22 radios de Schwarzschild |
+| Mass (M) | Black hole mass, on a logarithmic scale | from `10^0.5` to `10^10` solar masses |
+| Kerr Spin (a*) | Dimensionless spin `a* = c J / (G M²)` | 0 to 0.998 |
+| Accretion (ṁ) | Accretion rate in Eddington units, `Ṁ / Ṁ_Edd` | 0.01 to 1.00 |
+| Inclination (θ) | Observer inclination | 5° to 89° |
+| Distance (r_obs) | Camera distance | 5 to 22 Schwarzschild radii |
 
-Chips del raytracer:
+Raytracer chips:
 
-- **Doppler g⁴**. Enciende el desplazamiento Doppler relativista y el beaming de Liouville. El lado que se acerca se ve más brillante y más azul; el que se aleja, más tenue y más rojo. Arranca activo.
-- **GR Lensing**. Enciende la curvatura de la luz. Sin esto, el disco no se dobla por detrás del horizonte. Arranca activo.
-- **Shadow b_c**. Dibuja el marcador del impacto crítico y de la sombra. Arranca apagado.
+- **Doppler g⁴**. Turns on the relativistic Doppler shift and Liouville beaming. The approaching side looks brighter and bluer; the receding side looks dimmer and redder. On by default.
+- **GR Lensing**. Turns on light bending. Without it, the disk does not wrap behind the horizon. On by default.
+- **Shadow b_c**. Draws the critical-impact and shadow marker. Off by default.
 
-Herramientas del laboratorio 2D (solo en Split y en 2D Geodesics):
+2D lab tools (Split View and 2D Geodesics only):
 
-- **Photon Fan**. Lanza un abanico de fotones para ver cuáles se capturan, cuáles orbitan cerca de la esfera de fotones y cuáles escapan.
-- **Rosette**. Lanza una partícula masiva en una órbita que precesa.
-- **ISCO**. Coloca una partícula masiva en la órbita circular estable más interna, del lado prógrado.
-- **Mode: Photon / Massive**. Cambia el tipo de partícula que lanzas al arrastrar.
-- **Clear**. Borra las trayectorias.
+- **Photon Fan**. Launches a fan of photons so you can see which ones are captured, which ones skim the photon sphere, and which ones escape.
+- **Rosette**. Launches a massive particle on a precessing orbit.
+- **ISCO**. Places a massive particle on the prograde innermost stable circular orbit.
+- **Mode: Photon / Massive**. Switches the particle type launched by dragging.
+- **Clear**. Removes the trajectories.
 
-Al cargar, la app siembra sola un abanico de fotones y una roseta para que el laboratorio no empiece vacío.
+On load, the app seeds a photon fan and a rosette so the lab does not start empty.
 
 ## Presets
 
-El desplegable carga masa, espín, tasa de acreción e inclinación de un objeto real o de un caso límite. La descripción vive en `src/physics/relativity.ts`.
+The dropdown loads mass, spin, accretion rate, and inclination for a real object or a limiting case. The descriptions live in `src/physics/relativity.ts`.
 
-| Preset | Tipo | Masa | a* | ṁ | θ |
+| Preset | Type | Mass | a* | ṁ | θ |
 | --- | --- | --- | --- | ---: | ---: |
-| Cygnus X-1 | Binaria de rayos X, masa estelar | 21.2 M☉ | 0.95 | 0.15 | 46° |
-| Schwarzschild Reference (10 M☉) | Teórico, sin rotación | 10 M☉ | 0 | 0.10 | 48° |
-| GW150914 Remnant | Remanente de la primera fusión de LIGO | 62 M☉ | 0.68 | 0.08 | 44° |
-| Sagittarius A* (Sgr A*) | Agujero negro supermasivo del centro galáctico | 4.154 × 10⁶ M☉ | 0.90 | 0.01 | 42° |
-| M87* (Powehi) | Núcleo de Messier 87, con chorro relativista | 6.5 × 10⁹ M☉ | 0.90 | 0.02 | 50° |
-| Extreme Kerr (Thorne Limit) | Espín casi máximo, limitado por radiación | 1.0 × 10⁸ M☉ | 0.998 | 0.12 | 40° |
+| Cygnus X-1 | Stellar-mass X-ray binary | 21.2 M☉ | 0.95 | 0.15 | 46° |
+| Schwarzschild Reference (10 M☉) | Theoretical, non-rotating | 10 M☉ | 0 | 0.10 | 48° |
+| GW150914 Remnant | Remnant of the first LIGO merger | 62 M☉ | 0.68 | 0.08 | 44° |
+| Sagittarius A* (Sgr A*) | Supermassive black hole at the galactic center | 4.154 × 10⁶ M☉ | 0.90 | 0.01 | 42° |
+| M87* (Powehi) | Messier 87 core, with a relativistic jet | 6.5 × 10⁹ M☉ | 0.90 | 0.02 | 50° |
+| Extreme Kerr (Thorne Limit) | Near-maximal spin, radiation-limited | 1.0 × 10⁸ M☉ | 0.998 | 0.12 | 40° |
 
-Cygnus X-1 es el preset de arranque. El estado inicial de la sesión usa ṁ = 0.18 hasta que vuelves a elegir el preset, que lo deja en 0.15.
+Cygnus X-1 is the startup preset. The initial session state uses ṁ = 0.18 until you select the preset again, which sets it back to 0.15.
 
-## La tira de telemetría
+## Telemetry strip
 
-Todo esto se recalcula al vuelo. No son etiquetas fijas.
+All of this is recomputed on the fly. These are not fixed labels.
 
-- **r_s**. Radio de Schwarzschild, `r_s = 2GM/c²`, en metros, kilómetros o UA según el tamaño.
-- **r₊**. Horizonte externo de Kerr, `r₊ = ½ r_s (1 + √(1 - a*²))`. Con a* = 0 vale `r_s`. Al acercarse a 1, se encoge hacia `0.5 r_s`.
-- **r_ph**. Órbita circular de fotones en el ecuador, lado prógrado. Sin espín está en `1.5 r_s`. Con espín alto se acerca al horizonte.
-- **Shadow b_c**. Parámetro de impacto crítico. Un fotón que llega desde el infinito con `b < b_c` cae dentro.
-- **r_ISCO**. Órbita circular estable más interna, lado prógrado. En Schwarzschild está en `3 r_s`. En el límite de Thorne (`a* = 0.998`) baja hasta unos `0.62 r_s`.
-- **T_disk**. Temperatura máxima del disco de acreción, en kelvin. Depende de la masa, del espín y de ṁ.
+- **r_s**. Schwarzschild radius, `r_s = 2GM/c²`, shown in meters, kilometers, or AU depending on the size.
+- **r₊**. Outer Kerr horizon, `r₊ = ½ r_s (1 + √(1 - a*²))`. At a* = 0 it equals `r_s`. As a* approaches 1, it shrinks toward `0.5 r_s`.
+- **r_ph**. Equatorial circular photon orbit, prograde side. With no spin it sits at `1.5 r_s`. At high spin it moves toward the horizon.
+- **Shadow b_c**. Critical impact parameter. A photon arriving from infinity with `b < b_c` falls in.
+- **r_ISCO**. Innermost stable circular orbit, prograde side. In Schwarzschild it is at `3 r_s`. At the Thorne limit (`a* = 0.998`) it drops to about `0.62 r_s`.
+- **T_disk**. Peak accretion-disk temperature, in kelvin. It depends on mass, spin, and ṁ.
 
-## Cajón de fórmulas
+## Formula drawer
 
-**Formulas & V_eff** abre un panel a la derecha con la curva del potencial efectivo `V_eff(r)` y cuatro relaciones:
+**Formulas & V_eff** opens a panel on the right with the effective-potential curve `V_eff(r)` and four relations:
 
-- `r_s = 2GM/c²` y `r₊ = r_g (1 + √(1 - a*²))`
-- la geodésica nula `d²u/dφ² + u = (3/2) r_s u²`
-- el perfil de temperatura del disco
-- temperatura de Hawking y corrimiento al rojo gravitatorio en la sonda (`r = 2 r_s` por defecto)
+- `r_s = 2GM/c²` and `r₊ = r_g (1 + √(1 - a*²))`
+- the null geodesic `d²u/dφ² + u = (3/2) r_s u²`
+- the disk temperature profile
+- Hawking temperature and gravitational redshift at the probe (`r = 2 r_s` by default)
 
-La sonda está fija a `2 r_s` en el estado de la sesión. A esa distancia, el factor de dilatación temporal de un observador estático es `√(1 - r_s/r)` y el redshift gravitatorio es `z = 1/√(1 - r_s/r) - 1`. Dentro del horizonte estático el reloj propio se detiene respecto del infinito.
+The probe is fixed at `2 r_s` in the session state. At that distance, the time-dilation factor for a static observer is `√(1 - r_s/r)`, and the gravitational redshift is `z = 1/√(1 - r_s/r) - 1`. Inside the static limit, proper time stops relative to infinity.
 
-## Física que está implementada
+## Physics that is implemented
 
-Todo vive en TypeScript, sin una librería de relatividad. Las unidades del integrador son `r_s = 1` y `c = 1`, así que `GM/c² = 0.5`.
+Everything lives in TypeScript, with no relativity library. Integrator units are `r_s = 1` and `c = 1`, so `GM/c² = 0.5`.
 
-Horizontes, órbitas y sombra:
+Horizons, orbits, and shadow:
 
-- radio gravitatorio `r_g = GM/c²` y radio de Schwarzschild
-- horizontes de Kerr `r₊` y `r₋`
-- ergosfera (límite estático) en función del ángulo polar
-- esferas de fotones prógrada y retrógrada
-- impacto crítico de la sombra
-- ISCO prógrado y retrógrado
-- velocidad circular exacta de una geodésica
+- gravitational radius `r_g = GM/c²` and the Schwarzschild radius
+- Kerr horizons `r₊` and `r₋`
+- ergosphere (static limit) as a function of polar angle
+- prograde and retrograde photon spheres
+- critical shadow impact parameter
+- prograde and retrograde ISCO
+- exact circular geodesic speed
 
-Disco, luz y observador:
+Disk, light, and observer:
 
-- eficiencia radiativa de la acreción (≈ 5.7 % en Schwarzschild, ≈ 32 % cerca del límite de Thorne)
-- dilatación temporal y redshift gravitatorio
-- velocidad de escape y velocidad orbital circular, en unidades de `c`
-- factor Doppler del disco
-- ángulo de deflexión de la luz en función del parámetro de impacto
-- luminosidad y tasa de Eddington
-- temperatura del disco y su máximo
-- color de cuerpo negro
-- termodinámica de Hawking (temperatura y escalas asociadas)
-- gradiente de aceleración de marea
+- accretion radiative efficiency (about 5.7% in Schwarzschild, about 32% near the Thorne limit)
+- gravitational time dilation and redshift
+- escape speed and circular orbital speed, in units of `c`
+- disk Doppler factor
+- light-deflection angle as a function of impact parameter
+- Eddington luminosity and accretion rate
+- disk temperature and its peak
+- blackbody color
+- Hawking thermodynamics (temperature and related scales)
+- tidal acceleration gradient
 
-El laboratorio 2D dibuja el potencial efectivo y avanza cada partícula con `stepGeodesicRK4`.
+The 2D lab draws the effective potential and advances each particle with `stepGeodesicRK4`.
 
-## De qué está hecha
+## What it is made of
 
 ```text
-index.html                 página vacía: monta #app y carga el módulo
-src/main.ts                interfaz, estado, presets, telemetría y eventos
-src/style.css              HUD de cristal sobre el canvas a pantalla completa
-src/physics/relativity.ts  fórmulas analíticas y los seis presets
-src/physics/geodesics.ts   partículas, potencial efectivo e integrador RK4
+index.html                 empty page: mounts #app and loads the module
+src/main.ts                interface, state, presets, telemetry, and events
+src/style.css              glass HUD over the fullscreen canvas
+src/physics/relativity.ts  analytic formulas and the six presets
+src/physics/geodesics.ts   particles, effective potential, and the RK4 integrator
 src/physics/relativity.test.ts
-src/render/raytracer.ts    raytracer WebGL2 y reserva en Canvas 2D
-src/render/geodesicLab.ts  canvas de órbitas y canvas de V_eff
-vite.config.ts             servidor de desarrollo en 127.0.0.1:5173
+src/render/raytracer.ts    WebGL2 raytracer and Canvas 2D fallback
+src/render/geodesicLab.ts  orbit canvas and V_eff canvas
+vite.config.ts             dev server on 127.0.0.1:5173
 ```
 
-No hay backend, ni cuenta, ni base de datos. Todo corre en el navegador. La tipografía de la interfaz (Space Grotesk y JetBrains Mono) se carga desde Google Fonts.
+There is no backend, no account, and no database. Everything runs in the browser. The interface fonts (Space Grotesk and JetBrains Mono) are loaded from Google Fonts.
 
-Stack: TypeScript 5.7, Vite 6 y Vitest 2. El código es estricto (`strict`, sin variables ni parámetros sin usar).
+Stack: TypeScript 5.7, Vite 6, and Vitest 2. The code is strict (`strict`, no unused locals or parameters).
 
-## Cómo ejecutarlo
+## How to run it
 
-Hace falta Node.js. El lockfile del repo es el de npm.
+Node.js is required. The lockfile in the repo is npm's.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Abre [http://127.0.0.1:5173](http://127.0.0.1:5173).
+Open [http://127.0.0.1:5173](http://127.0.0.1:5173).
 
 ```bash
-npm test          # comprueba las fórmulas de relativity.ts
+npm test          # checks the formulas in relativity.ts
 npm run build     # tsc -b && vite build
-npm run preview   # sirve el build
+npm run preview   # serves the build
 ```
 
-## Qué no es
+## What it is not
 
-No es una foto del Event Horizon Telescope ni una integración completa de la métrica de Kerr en 3+1. El raytracer usa la ecuación de Binet relativista con una corrección de espín, y el disco es un modelo delgado. Sirve para ver, con números reales, cómo se mueven el horizonte, la esfera de fotones, la sombra, el ISCO y el brillo Doppler cuando cambias el agujero negro.
+It is not an Event Horizon Telescope photograph, and it is not a full 3+1 integration of the Kerr metric. The raytracer uses the relativistic Binet equation with a spin correction, and the disk is a thin-disk model. It is there so you can watch, with real numbers, how the horizon, the photon sphere, the shadow, the ISCO, and the Doppler brightness move when you change the black hole.
 
-## Licencia
+## License
 
-MIT. Copyright (c) 2026 Ilyes Ameraoui. El texto está en [LICENSE](LICENSE).
+MIT. Copyright (c) 2026 Ilyes Ameraoui. The text is in [LICENSE](LICENSE).
 
 created by coloride
